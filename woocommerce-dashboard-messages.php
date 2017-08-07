@@ -22,7 +22,21 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
                 add_filter('woocommerce_settings_tabs_array', array( $this, 'add_settings_tab'), 80);
                 add_action('woocommerce_settings_dashboard_messages', array( $this, 'add_settings'), 10);
                 add_action('woocommerce_update_options_dashboard_messages', array( $this, 'update_settings'), 10);
-                add_action('init', array ($this, 'display_dashboard_messages'));
+                add_action('init', array($this, 'display_dashboard_messages'));
+                add_action('add_meta_boxes', array($this, 'dashboard_messages_custom_meta'));
+
+                function dashboard_meta_callback($product){
+                    wp_nonce_field( basename( __FILE__ ), 'dashboard_nonce' );
+                    $dashboard_stored_meta = get_post_meta( $product->ID );
+                    ?>
+
+                    <p>
+                        <label for="meta-text" class="prfx-row-title"><?php _e( 'Example Text Input', 'woocommerce-dashboard-messages' )?></label>
+                        <input type="text" name="meta-text" id="meta-text" value="<?php if ( isset ( $dashboard_stored_meta['meta-text'] ) ) echo $dashboard_stored_meta['meta-text'][0]; ?>" />
+                    </p>
+
+                    <?php
+                }
             }
 
             // Create settings tab
@@ -45,7 +59,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
             public function display_dashboard_messages(){
                 $messages_on = get_option('wc_dashboard_messages_on') == 'yes' ? true : false;
 
-                // check if the setting is checked 
+                // check if the setting is checked and on account page
                 if($messages_on && TRUE && is_account_page()){
                 }
             }
@@ -71,6 +85,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
                     )
                 );
                 return $settings;
+            }
+
+            public function dashboard_messages_custom_meta(){
+                add_meta_box( 'dashboard_meta', __( 'Meta Box Title', 'woocommerce-dashboard-messages' ), 'dashboard_meta_callback', 'product' );
             }
 
         }
