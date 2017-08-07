@@ -25,14 +25,15 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
                 add_action('init', array($this, 'display_dashboard_messages'));
                 add_action('add_meta_boxes', array($this, 'dashboard_messages_custom_meta'));
 
+                // Meta box callback
                 function dashboard_meta_callback($product){
                     wp_nonce_field( basename( __FILE__ ), 'dashboard_nonce' );
                     $dashboard_stored_meta = get_post_meta( $product->ID );
                     ?>
 
                     <p>
-                        <label for="meta-text" class="prfx-row-title"><?php _e( 'Example Text Input', 'woocommerce-dashboard-messages' )?></label>
-                        <input type="text" name="meta-text" id="meta-text" value="<?php if ( isset ( $dashboard_stored_meta['meta-text'] ) ) echo $dashboard_stored_meta['meta-text'][0]; ?>" />
+                        <label for="meta-textarea" class="dashboard-row-title" style="display: block;"><?php _e( 'Enter a message for customers to see after purchasing this product.', 'woocommerce-dashboard-messages' )?></label>
+                        <textarea name="meta-textarea" id="meta-textarea" style="width: 100%;min-height: 200px;"><?php if ( isset ( $dashboard_stored_meta['meta-textarea'] ) ) echo $dashboard_stored_meta['meta-textarea'][0]; ?></textarea>
                     </p>
 
                     <?php
@@ -50,10 +51,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
                     if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
                         return;
                     }
-                
-                    // Checks for input and sanitizes/saves if needed
-                    if( isset( $_POST[ 'meta-text' ] ) ) {
-                        update_post_meta( $post_id, 'meta-text', sanitize_text_field( $_POST[ 'meta-text' ] ) );
+
+                    // Checks for input and saves if needed
+                    if( isset( $_POST[ 'meta-textarea' ] ) ) {
+                        update_post_meta( $post_id, 'meta-textarea', $_POST[ 'meta-textarea' ] );
                     }
                 
                 }
@@ -108,8 +109,9 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
                 return $settings;
             }
 
+            // Add meta box for products
             public function dashboard_messages_custom_meta(){
-                add_meta_box( 'dashboard_meta', __( 'Meta Box Title', 'woocommerce-dashboard-messages' ), 'dashboard_meta_callback', 'product' );
+                add_meta_box( 'dashboard_meta', __( 'Account Dashboard Messages', 'woocommerce-dashboard-messages' ), 'dashboard_meta_callback', 'product' );
             }
 
         }
