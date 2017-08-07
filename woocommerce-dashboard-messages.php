@@ -120,3 +120,13 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
 
 }
 
+/* To temporarily test display in template
+<?php
+    $meta_value = get_post_meta( get_the_ID(), 'meta-textarea', true );
+ 
+    if( !empty( $meta_value ) ) {
+        echo $meta_value;
+    }
+?>
+*/
+
