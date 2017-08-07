@@ -19,16 +19,16 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', ge
     if ( ! class_exists('WC_Dashboard_Messages')){
         class WC_Dashboard_Messages{
             public function __construct(){
-                add_filter('woocommerce_get_sections_products', array( $this, 'add_settings_section'), 20);
+                add_filter('woocommerce_settings_tabs_array', array( $this, 'add_settings_tab'), 80);
                 add_action('woocommerce_settings_dashboard_messages', array( $this, 'add_settings'), 10);
                 add_action('woocommerce_update_options_dashboard_messages', array( $this, 'update_settings'), 10);
                 add_action('init', array ($this, 'display_dashboard_messages'));
             }
 
             // Create settings tab
-            public function add_settings_section($sections){
-                $sections['dashboard_messages'] = __('Dashboard Messages', 'woocommerce-dashboard-messages');
-                return $sections;
+            public function add_settings_tab($settings_tabs){
+                $settings_tabs['dashboard_messages'] = __('Dashboard Messages', 'woocommerce-dashboard-messages');
+                return $settings_tabs;
             }
 
             // Create settings
